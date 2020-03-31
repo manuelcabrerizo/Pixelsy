@@ -5,8 +5,8 @@
 #include "../SDL2/SDL.h"
 #include "./glm/glm.hpp"
 #include "./ColiderComponent.h"
-#include "./Hechizo.h"
-#include "./Game.h"
+#include "Hechizo.h"
+
 
 class Player{
     private:
@@ -27,6 +27,8 @@ class Player{
         bool dWasPress;   
         bool canFire = true;  
         Hechizo fireBall;
+
+
     public:
         Player(int posX, int posY, int velX, int velY, int width, int height,int scale);
         void Draw(const char* filePath);

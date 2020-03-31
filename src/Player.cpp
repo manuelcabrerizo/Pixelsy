@@ -1,4 +1,5 @@
 #include "Player.h"
+#include "./Game.h"
 
 Player::Player(int posX, int posY, int velX, int velY, int width, int height,int scale){
     this->position.x = posX;
@@ -158,11 +159,13 @@ void Player::Update(float deltaTime){
         }
     }
 
-    fireBall.Update(deltaTime);
+    fireBall.Update(deltaTime, this->position);
     
 }
 
 void Player::Render(){
+    textureManager.destinationRectangle.x = WINDOW_WIDTH/2;
+    textureManager.destinationRectangle.y = WINDOW_HEIGHT/2;
     SDL_RenderCopy(Game::renderer, textureManager.texture,
     &textureManager.sourceRectangle, &textureManager.destinationRectangle);
     fireBall.Render();

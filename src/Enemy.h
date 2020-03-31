@@ -4,15 +4,16 @@
 #include <iostream>
 #include "../SDL2/SDL.h"
 #include "./glm/glm.hpp"
-#include "./Game.h"
-#include "./ColiderComponent.h"
-#include "./Player.h"
 
+#include "./ColiderComponent.h"
+
+class Player;
 
 class Enemy {
 private:
     glm::vec2 position;
     glm::vec2 velocity;
+    glm::vec2 CameraOffset;
     int width;
     int height;
     int scale;

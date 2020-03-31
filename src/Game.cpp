@@ -1,16 +1,15 @@
 #include "./Game.h"
 #include <iostream>
-#include "Player.h"
-#include "Constants.h"
 #include "ColiderComponent.h"
-#include "Enemy.h"
+//#include "TileMap.h"
 
 SDL_Renderer* Game::renderer;
-Player player(70, 10, 0, 0, 16, 16, 4);
-Enemy enemy(300, 200, 0, 0, 16, 16, 4, 80);
-Enemy enemy2(100, 250, 0, 0, 16, 16, 4, 80);
 
-Game::Game(){
+Game::Game():
+player(1800, 860, 0, 0, 16, 16, SCALE),
+enemy(36*16*SCALE, 25*16*SCALE, 0, 0, 16, 16, SCALE, 80),
+enemy2(25*16*SCALE, 22*16*SCALE, 0, 0, 16, 16, SCALE, 80)
+{
   this->isRunning = false;
 }
 
@@ -26,7 +25,7 @@ void Game::Initialize(int width, int height){
     std::cerr << "Error Creating the window\n";
     return;
   }
-  renderer = SDL_CreateRenderer(this->window, -1, SDL_RENDERER_ACCELERATED);
+  renderer = SDL_CreateRenderer(this->window, -1, 0);
   
   if(!renderer){
     std::cerr << "Error Creating the renderer\n";
@@ -36,6 +35,7 @@ void Game::Initialize(int width, int height){
   player.Draw("assets/MagoAnimations.png");
   enemy.Draw("assets/MonstroAnimationsFull.png");
   enemy2.Draw("assets/MonstroAnimationsFull.png");
+  map.Initiallize("Pixelsy.map", "assets/mapaPixelsy.png");
 
   this->isRunning = true;
   return;
@@ -65,11 +65,7 @@ void Game::ProcessInput(){
 
 }
 
-void Game::Update(){
-  while (!SDL_TICKS_PASSED(SDL_GetTicks(), this->ticksLastFrame + FRAME_TARGET_TIME));
-  float deltaTime = (SDL_GetTicks() - this->ticksLastFrame) / 1000.0f;
-  if(deltaTime > 0.05){ deltaTime = 0.05; }
-  this->ticksLastFrame = SDL_GetTicks();
+void Game::Update(float deltaTime){
 
   player.Update(deltaTime);
   if(enemy.GetLife() > 0){
@@ -87,7 +83,7 @@ void Game::Update(){
     player.GetFireBall().colider.IsColiding(&enemy.colider);
 
   }else{
-    player.colider.SetIsTrigger(false);
+    player.colider.SetIsTrigger(false);;
   }
 
   if(enemy2.GetLife() > 0){
@@ -110,14 +106,15 @@ void Game::Update(){
 
   enemy.colider.IsColiding(&player.GetFireBall().colider);
   enemy2.colider.IsColiding(&player.GetFireBall().colider);
-  
+
+  map.Update(player.GetPlayerPosition()); 
 }
 
 void Game::Render(){
 
   SDL_SetRenderDrawColor(renderer ,0, 102, 0, 255);
   SDL_RenderClear(renderer);
-
+  map.Render();
   player.Render();
   enemy.Render();
   enemy2.Render();

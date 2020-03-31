@@ -1,4 +1,6 @@
 #include "./Enemy.h"
+#include "./Game.h"
+#include "./Player.h"
 
 Enemy::Enemy(int posX, int posY, int velX, int velY, int width, int height,int scale, int life){
     this->position.x = posX;
@@ -19,6 +21,9 @@ void Enemy::Draw(const char* filePath){
 
 void Enemy::Update(float deltaTime, Player* player){
 
+    CameraOffset.x = WINDOW_WIDTH/2 - player->GetPlayerPosition().x;
+    CameraOffset.y = WINDOW_HEIGHT/2 - player->GetPlayerPosition().y;
+
     this->colider.Initialize(this->position.x, this->position.y, this->width * this->scale, this->height * this->scale);
     this->dangerZoneIzq.Initialize(this->position.x - (this->width * 3) * this->scale, this->position.y, (this->width * 3) * this->scale, this->height * this->scale);
     this->dangerZoneDer.Initialize(this->position.x + this->width * this->scale, this->position.y, (this->width * 3) * this->scale, this->height * this->scale);
@@ -35,28 +40,28 @@ void Enemy::Update(float deltaTime, Player* player){
      
 
     if(this->GetDangerZoneIzq()->GetisTrigger()){
-        this->SetVelocity(-60, 0);
+        this->SetVelocity(-80, 0);
         this->currentRow = 112;
     }else if(this->GetDangerZoneDer()->GetisTrigger()){
-        this->SetVelocity(60, 0);
+        this->SetVelocity(80, 0);
         this->currentRow = 96;
     }else if(this->GetDangerZoneUp()->GetisTrigger()){
-        this->SetVelocity(0, -60);
+        this->SetVelocity(0, -80);
         this->currentRow = 144;
     }else if(this->GetDangerZoneDown()->GetisTrigger()){
-        this->SetVelocity(0, 60);
+        this->SetVelocity(0, 80);
         this->currentRow = 96;
     }else if(this->GetDangerZoneUpIzq()->GetisTrigger()){
-        this->SetVelocity(-40, -40);
+        this->SetVelocity(-60, -60);
         this->currentRow = 176;
     }else if(this->GetDangerZoneUpDer()->GetisTrigger()){
-        this->SetVelocity(40, -40);
+        this->SetVelocity(60, -60);
         this->currentRow = 160;
     }else if(this->GetDangerZoneDownDer()->GetisTrigger()){
-        this->SetVelocity(40, 40);
+        this->SetVelocity(60, 60);
         this->currentRow = 96;
     }else if(this->GetDangerZoneDownIzq()->GetisTrigger()){
-        this->SetVelocity(-40, 40);
+        this->SetVelocity(-60, 60);
         this->currentRow = 112;
     }else{
         this->SetVelocity(0, 0);
@@ -77,8 +82,8 @@ void Enemy::Update(float deltaTime, Player* player){
     textureManager.sourceRectangle.w = this->width; 
     textureManager.sourceRectangle.h = this->height;
 
-    textureManager.destinationRectangle.x = this->position.x;
-    textureManager.destinationRectangle.y = this->position.y;
+    textureManager.destinationRectangle.x = this->position.x + CameraOffset.x;
+    textureManager.destinationRectangle.y = this->position.y + CameraOffset.y;
     textureManager.destinationRectangle.w = this->width * this->scale;
     textureManager.destinationRectangle.h = this->height * this->scale;
     

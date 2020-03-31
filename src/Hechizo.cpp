@@ -1,4 +1,5 @@
 #include "Hechizo.h"
+#include "Game.h"
 
 void Hechizo::Initialize(int posX, int posY, int width, int height,int scale){
     this->position.x = posX;
@@ -16,7 +17,11 @@ void Hechizo::Draw(const char* filePath){
     SDL_FreeSurface(tempSurface); 
 }
 
-void Hechizo::Update(float deltaTime){
+void Hechizo::Update(float deltaTime, glm::vec2 position){
+
+    CameraOffset.x = WINDOW_WIDTH/2 - position.x;
+    CameraOffset.y = WINDOW_HEIGHT/2 - position.y;
+
     this->position.x = this->position.x + this->velocity.x * deltaTime;
     this->position.y = this->position.y + this->velocity.y * deltaTime;
 
@@ -27,8 +32,8 @@ void Hechizo::Update(float deltaTime){
     textureManager.sourceRectangle.w = this->width; 
     textureManager.sourceRectangle.h = this->height;
 
-    textureManager.destinationRectangle.x = this->position.x;
-    textureManager.destinationRectangle.y = this->position.y;
+    textureManager.destinationRectangle.x = this->position.x + CameraOffset.x;
+    textureManager.destinationRectangle.y = this->position.y + CameraOffset.y;
     textureManager.destinationRectangle.w = this->width * this->scale;
     textureManager.destinationRectangle.h = this->height * this->scale;
 
