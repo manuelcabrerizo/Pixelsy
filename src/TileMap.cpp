@@ -1,4 +1,3 @@
-#if 1
 #include "TileMap.h"
 #include "Game.h"
 #include <iostream>
@@ -41,23 +40,21 @@ void TileMap::Initiallize(std::string fileS, const char* filePath){
     }
     file.close();
     std::istringstream split(this->texto);
-    std::vector<std::string> resultado(std::istream_iterator<std::string>{split},
-    std::istream_iterator<std::string>());
+    std::vector<std::string> resultado(std::istream_iterator<std::string>{split}, std::istream_iterator<std::string>());
 
     SDL_Surface* tempSurface = IMG_Load(filePath);
     texturemanager.texture = SDL_CreateTextureFromSurface(Game::renderer, tempSurface);
     SDL_FreeSurface(tempSurface);
 
-    std::cout << "Test1" << std::endl;
     FillTiles(resultado); 
 }
 
 void TileMap::FillTiles(std::vector<std::string> data){
     this->texturemanager.sourceRectangle.w = 16;
-    this->texturemanager.sourceRectangle.h = 16; 
+    this->texturemanager.sourceRectangle.h = 16;
+    this->tiles.reserve(MapWidth*MapHeight); 
     for(int y = 0; y < MapHeight; y++){
         for(int x = 0; x < MapWidth; x++){
-             std::cout << data[(y * MapWidth) + x] << " ";
            if(data[(y * MapWidth) + x] == "1"){
                 this->texturemanager.sourceRectangle.x = 0;
                 this->texturemanager.sourceRectangle.y = 0; 
@@ -168,9 +165,8 @@ void TileMap::FillTiles(std::vector<std::string> data){
                 this->texturemanager.sourceRectangle.y = 80; 
            }
     
-           tiles.push_back(this->texturemanager.sourceRectangle);
+           tiles[(y * MapWidth) + x] = this->texturemanager.sourceRectangle;
         }
-        std::cout << std::endl;
     }
 }
 
@@ -201,6 +197,3 @@ void TileMap::Render()
         }
     }
 }
-
-
-#endif
