@@ -4,7 +4,7 @@
 #include <iostream>
 #include "../SDL2/SDL.h"
 #include "./glm/glm.hpp"
-
+#include "TileMap.h"
 #include "./ColiderComponent.h"
 
 class Player;
@@ -35,7 +35,7 @@ private:
 public:
     Enemy(int posX, int posY, int velX, int velY, int width, int height,int scale, int life);
     void Draw(const char* filePath);
-    void Update(float deltaTime, Player* player);
+    void Update(float deltaTime, Player* player, TileMap* map);
     void Render();
     ColiderComponent colider;
     void EnemyGetsShoot();

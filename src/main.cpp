@@ -2,6 +2,7 @@
 #include "./SDL2/SDL.h"
 #include "./Game.h"
 #include "Constants.h"
+#define sizeArray(X) sizeof(X)/sizeof(X[0])
 
 float DeltaTime = 0;
 unsigned int LastTime = SDL_GetTicks();

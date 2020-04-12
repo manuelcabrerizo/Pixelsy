@@ -19,6 +19,7 @@ private:
   Enemy enemy;
   Enemy enemy2;
   TileMap map;
+  TileMap layerUno;
   std::vector<std::string>mapData;
 
 public:

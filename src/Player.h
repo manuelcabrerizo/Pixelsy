@@ -6,6 +6,7 @@
 #include "./glm/glm.hpp"
 #include "./ColiderComponent.h"
 #include "Hechizo.h"
+#include "TileMap.h"
 
 
 class Player{
@@ -33,7 +34,7 @@ class Player{
         Player(int posX, int posY, int velX, int velY, int width, int height,int scale);
         void Draw(const char* filePath);
         void InputManager();
-        void Update(float deltaTime);
+        void Update(float deltaTime, TileMap* map);
         void Render();
         bool KeyIsDown(SDL_Scancode key);
         Hechizo& GetFireBall();

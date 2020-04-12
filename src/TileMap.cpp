@@ -13,6 +13,9 @@ TileMap::TileMap()
 }
 
 void TileMap::Initiallize(std::string fileS, const char* filePath){
+
+     this->colider.Initialize(0,0, 64, 64);
+
     std::ifstream file(fileS);
 
     std::string line;
@@ -52,9 +55,13 @@ void TileMap::Initiallize(std::string fileS, const char* filePath){
 void TileMap::FillTiles(std::vector<std::string> data){
     this->texturemanager.sourceRectangle.w = 16;
     this->texturemanager.sourceRectangle.h = 16;
-    this->tiles.reserve(MapWidth*MapHeight); 
+    this->tiles.reserve(MapWidth*MapHeight);
+
+     TileType Type = TileType::NO_SOILID;
+
     for(int y = 0; y < MapHeight; y++){
         for(int x = 0; x < MapWidth; x++){
+          Type = TileType::NO_SOILID;
            if(data[(y * MapWidth) + x] == "1"){
                 this->texturemanager.sourceRectangle.x = 0;
                 this->texturemanager.sourceRectangle.y = 0; 
@@ -68,8 +75,9 @@ void TileMap::FillTiles(std::vector<std::string> data){
                 this->texturemanager.sourceRectangle.x = 48;
                 this->texturemanager.sourceRectangle.y = 0; 
            }else if(data[(y * MapWidth) + x] == "5"){
+                Type = TileType::SOLID;
                 this->texturemanager.sourceRectangle.x = 64;
-                this->texturemanager.sourceRectangle.y = 0; 
+                this->texturemanager.sourceRectangle.y = 0;
            }else if(data[(y * MapWidth) + x] == "6"){
                 this->texturemanager.sourceRectangle.x = 80;
                 this->texturemanager.sourceRectangle.y = 0; 
@@ -89,6 +97,7 @@ void TileMap::FillTiles(std::vector<std::string> data){
                 this->texturemanager.sourceRectangle.x = 64;
                 this->texturemanager.sourceRectangle.y = 16; 
            }else if(data[(y * MapWidth) + x] == "12"){
+                Type = TileType::SOLID;
                 this->texturemanager.sourceRectangle.x = 80;
                 this->texturemanager.sourceRectangle.y = 16; 
            }else if(data[(y * MapWidth) + x] == "13"){
@@ -157,15 +166,19 @@ void TileMap::FillTiles(std::vector<std::string> data){
            }else if(data[(y * MapWidth) + x] == "34"){
                 this->texturemanager.sourceRectangle.x = 48;
                 this->texturemanager.sourceRectangle.y = 80; 
+                Type = TileType::SOLID;
            }else if(data[(y * MapWidth) + x] == "35"){
                 this->texturemanager.sourceRectangle.x = 64;
                 this->texturemanager.sourceRectangle.y = 80; 
+                Type = TileType::SOLID;
            }else if(data[(y * MapWidth) + x] == "36"){
                 this->texturemanager.sourceRectangle.x = 80;
                 this->texturemanager.sourceRectangle.y = 80; 
+                Type = TileType::SOLID;
            }
     
-           tiles[(y * MapWidth) + x] = this->texturemanager.sourceRectangle;
+           tiles[(y * MapWidth) + x].rect = this->texturemanager.sourceRectangle;
+           tiles[(y * MapWidth) + x].type = Type;
         }
     }
 }
@@ -183,12 +196,13 @@ void TileMap::Render()
         for(int x = 0; x < MapWidth; x++){
             
             SDL_Rect destinationRect;
-            SDL_Rect sourceRect = tiles[(y * MapWidth) + x];
+            SDL_Rect sourceRect = tiles[(y * MapWidth) + x].rect;
 
             destinationRect.w  = sourceRect.w * 4;
             destinationRect.h = sourceRect.h * 4;
             destinationRect.x = (x * sourceRect.w * 4)+CameraOffset.x;
             destinationRect.y = (y * sourceRect.h * 4)+CameraOffset.y;
+            colider.SetPosition(destinationRect.x, destinationRect.y);
 
             SDL_RenderCopy(Game::renderer, texturemanager.texture,
             &sourceRect, &destinationRect);

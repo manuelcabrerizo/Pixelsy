@@ -19,7 +19,7 @@ void Enemy::Draw(const char* filePath){
     SDL_FreeSurface(tempSurface); 
 }
 
-void Enemy::Update(float deltaTime, Player* player){
+void Enemy::Update(float deltaTime, Player* player, TileMap* map){
 
     CameraOffset.x = WINDOW_WIDTH/2 - player->GetPlayerPosition().x;
     CameraOffset.y = WINDOW_HEIGHT/2 - player->GetPlayerPosition().y;
@@ -38,35 +38,45 @@ void Enemy::Update(float deltaTime, Player* player){
     this->dangerZoneDownDer.Initialize(this->position.x + this->width * this->scale, this->position.y + this->height * this->scale,
      (this->width * 3) * this->scale, (this->height * 3) * this->scale);
      
+    glm::vec2 NewVelocity = {};
 
     if(this->GetDangerZoneIzq()->GetisTrigger()){
-        this->SetVelocity(-80, 0);
+        NewVelocity.x = -80;
+        NewVelocity.y = 0;
         this->currentRow = 112;
     }else if(this->GetDangerZoneDer()->GetisTrigger()){
-        this->SetVelocity(80, 0);
+        NewVelocity.x = 80;
+        NewVelocity.y = 0;
         this->currentRow = 96;
     }else if(this->GetDangerZoneUp()->GetisTrigger()){
-        this->SetVelocity(0, -80);
+        NewVelocity.x = 0;
+        NewVelocity.y = -80;
         this->currentRow = 144;
     }else if(this->GetDangerZoneDown()->GetisTrigger()){
-        this->SetVelocity(0, 80);
+        NewVelocity.x = 0;
+        NewVelocity.y = 80;
         this->currentRow = 96;
     }else if(this->GetDangerZoneUpIzq()->GetisTrigger()){
-        this->SetVelocity(-60, -60);
+        NewVelocity.x = -60;
+        NewVelocity.y = -60;
         this->currentRow = 176;
     }else if(this->GetDangerZoneUpDer()->GetisTrigger()){
-        this->SetVelocity(60, -60);
+        NewVelocity.x = 60;
+        NewVelocity.y = -60;
         this->currentRow = 160;
     }else if(this->GetDangerZoneDownDer()->GetisTrigger()){
-        this->SetVelocity(60, 60);
+        NewVelocity.x = 60;
+        NewVelocity.y = 60;
         this->currentRow = 96;
     }else if(this->GetDangerZoneDownIzq()->GetisTrigger()){
-        this->SetVelocity(-60, 60);
+        NewVelocity.x = -60;
+        NewVelocity.y = 60;
         this->currentRow = 112;
     }else{
         this->SetVelocity(0, 0);
         this->currentRow = 16;
     }
+
     if(this->colider.GetisTrigger() == true){
         this->currentRow = 128;
     }
@@ -74,8 +84,16 @@ void Enemy::Update(float deltaTime, Player* player){
     this->numberFrame = 7;
     this->currentFrame = 16 * int(((SDL_GetTicks() / 100) % this->numberFrame));
 
-    this->position.x = this->position.x + this->velocity.x * deltaTime;
-    this->position.y = this->position.y + this->velocity.y * deltaTime;
+    glm::vec2 NewPosition = this->position + NewVelocity * deltaTime;
+
+    int TileX = (NewPosition.x + 32) / map->TileWidth;
+    int TileY = (NewPosition.y + 32) / map->TileHeight;
+
+    std::vector<Tile>& Tile = *map->GetTiles();
+
+    if(Tile[TileX + TileY * map->GetMapWidth()].type == TileType::NO_SOILID){
+        this->position = NewPosition;
+    }
 
     textureManager.sourceRectangle.x = currentFrame;
     textureManager.sourceRectangle.y = currentRow;

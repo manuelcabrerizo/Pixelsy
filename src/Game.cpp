@@ -35,7 +35,8 @@ void Game::Initialize(int width, int height){
   player.Draw("assets/MagoAnimations.png");
   enemy.Draw("assets/MonstroAnimationsFull.png");
   enemy2.Draw("assets/MonstroAnimationsFull.png");
-  map.Initiallize("Pixelsy.map", "assets/mapaPixelsy.png");
+  map.Initiallize("PixelsyBase.map", "assets/layerUno.png");
+  layerUno.Initiallize("layerUno.map", "assets/layerUno.png");
 
   this->isRunning = true;
   return;
@@ -67,9 +68,10 @@ void Game::ProcessInput(){
 
 void Game::Update(float deltaTime){
 
-  player.Update(deltaTime);
+  player.Update(deltaTime, &map);
+
   if(enemy.GetLife() > 0){
-    enemy.Update(deltaTime, &player);
+    enemy.Update(deltaTime, &player, &map);
     enemy.EnemyGetsShoot();
     player.colider.IsColiding(&enemy.colider);
     enemy.GetDangerZoneIzq()->IsColiding(&player.colider);
@@ -87,7 +89,7 @@ void Game::Update(float deltaTime){
   }
 
   if(enemy2.GetLife() > 0){
-    enemy2.Update(deltaTime, &player);
+    enemy2.Update(deltaTime, &player, &map);
     enemy2.EnemyGetsShoot();
     player.colider.IsColiding(&enemy2.colider);
     enemy2.GetDangerZoneIzq()->IsColiding(&player.colider);
@@ -108,6 +110,7 @@ void Game::Update(float deltaTime){
   enemy2.colider.IsColiding(&player.GetFireBall().colider);
 
   map.Update(player.GetPlayerPosition()); 
+  layerUno.Update(player.GetPlayerPosition());
 }
 
 void Game::Render(){
@@ -118,6 +121,7 @@ void Game::Render(){
   player.Render();
   enemy.Render();
   enemy2.Render();
+  layerUno.Render();
 
   SDL_RenderPresent(renderer);
 
