@@ -4,8 +4,6 @@
 Player::Player(int posX, int posY, int velX, int velY, int width, int height,int scale){
     this->position.x = posX;
     this->position.y = posY;
-    this->velocity.x = 200;
-    this->velocity.y = 200;
     this->width = width;
     this->height = height;
     this->scale = scale;
@@ -110,7 +108,8 @@ void Player::Update(float deltaTime, TileMap* map){
     }  
 
     if(this->KeyIsDown(SDL_SCANCODE_SPACE)){
-        if(this->canFire == true){
+        if(coolDown >= 1.5){
+            coolDown = 0;
             if(this->lWasPress == true){
 
                 fireBall.Initialize(this->position.x, this->position.y + 6 * 4, 8, 8, 4);
@@ -146,6 +145,7 @@ void Player::Update(float deltaTime, TileMap* map){
             }
         }
     }
+    coolDown += deltaTime;
     fireBall.Update(deltaTime, this->position);
     
 }

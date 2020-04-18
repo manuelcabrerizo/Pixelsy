@@ -19,14 +19,14 @@ class Player{
         int currentFrame;
         int currentRow;
         int numberFrame;
+        float coolDown = 3.0;
         bool isDrawable = true;
         const Uint8* keystate;
         TextureManager textureManager;
         bool rWasPress;
         bool lWasPress;
         bool uWasPress;
-        bool dWasPress;   
-        bool canFire = true;  
+        bool dWasPress;    
         Hechizo fireBall;
 
 
