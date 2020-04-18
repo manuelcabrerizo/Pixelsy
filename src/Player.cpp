@@ -12,14 +12,19 @@ Player::Player(int posX, int posY, int velX, int velY, int width, int height,int
     numberFrame = 1;
 
     this->colider.Initialize(this->position.x, this->position.y, this->width * this->scale, this->height * this->scale);
-    //fireBall.Initialize(position.x, position.y, 8, 8, this->scale);
+    fireBalls.push_back(&fireBallUno);
+    fireBalls.push_back(&fireBallDos);
+    fireBalls.push_back(&fireBallTres);
+
 }
 
 void Player::Draw(const char* filePath){
     SDL_Surface* tempSurface = IMG_Load(filePath);
     textureManager.texture = SDL_CreateTextureFromSurface(Game::renderer, tempSurface);
     SDL_FreeSurface(tempSurface); 
-    fireBall.Draw("assets/animation.png");
+    fireBallUno.Draw("assets/animation.png");
+    fireBallDos.Draw("assets/animation.png");
+    fireBallTres.Draw("assets/animation.png");
 }
 
 void Player::InputManager(){
@@ -108,45 +113,52 @@ void Player::Update(float deltaTime, TileMap* map){
     }  
 
     if(this->KeyIsDown(SDL_SCANCODE_SPACE)){
-        if(coolDown >= 1.5){
+        if(coolDown >= 0.2){
             coolDown = 0;
-            if(this->lWasPress == true){
+            if(contador <= 2){
+                if(this->lWasPress == true){
 
-                fireBall.Initialize(this->position.x, this->position.y + 6 * 4, 8, 8, 4);
-                fireBall.colider.SetPosition(this->position.x, this->position.y + 6 * this->scale);
-                fireBall.colider.SetVelocity(-300, 0);
-                fireBall.SetVelocity(-300, 0);
-                fireBall.SetCurrentRow(0);
+                    fireBalls[contador]->Initialize(this->position.x, this->position.y + 6 * 4, 8, 8, 4);
+                    fireBalls[contador]->colider.SetPosition(this->position.x, this->position.y + 6 * this->scale);
+                    fireBalls[contador]->colider.SetVelocity(-300, 0);
+                    fireBalls[contador]->SetVelocity(-300, 0);
+                    fireBalls[contador]->SetCurrentRow(0);
 
-            }else if(this->uWasPress == true){
+                }else if(this->uWasPress == true){
 
-                fireBall.Initialize(this->position.x + 10 * 4, this->position.y + 8  * 4, 8, 8, 4);
-                fireBall.colider.SetVelocity(0, -300);
-                fireBall.colider.SetPosition(this->position.x +  10 * this->scale, this->position.y);
-                fireBall.SetVelocity(0, -300);
-                fireBall.SetCurrentRow(8);
+                    fireBalls[contador]->Initialize(this->position.x + 10 * 4, this->position.y + 8  * 4, 8, 8, 4);
+                    fireBalls[contador]->colider.SetVelocity(0, -300);
+                    fireBalls[contador]->colider.SetPosition(this->position.x +  10 * this->scale, this->position.y);
+                    fireBalls[contador]->SetVelocity(0, -300);
+                    fireBalls[contador]->SetCurrentRow(8);
                             
-            }else if(this->rWasPress == true){
+                }else if(this->rWasPress == true){
 
-                fireBall.Initialize(this->position.x + 9 * 4, this->position.y + 5  * 4, 8, 8, 4);
-                fireBall.colider.SetVelocity(300, 0);
-                fireBall.colider.SetPosition(this->position.x + 9 * this->scale, this->position.y + 5 * this->scale);
-                fireBall.SetVelocity(300, 0);
-                fireBall.SetCurrentRow(16);
+                    fireBalls[contador]->Initialize(this->position.x + 9 * 4, this->position.y + 5  * 4, 8, 8, 4);
+                    fireBalls[contador]->colider.SetVelocity(300, 0);
+                    fireBalls[contador]->colider.SetPosition(this->position.x + 9 * this->scale, this->position.y + 5 * this->scale);
+                    fireBalls[contador]->SetVelocity(300, 0);
+                    fireBalls[contador]->SetCurrentRow(16);
                             
-            }else if(this->dWasPress == true){
+                }else if(this->dWasPress == true){
 
-                fireBall.Initialize(this->position.x - 2 * 4, this->position.y + 2  * 4, 8, 8, 4);
-                fireBall.colider.SetVelocity(0, 300);
-                fireBall.colider.SetPosition(this->position.x - 2 * this->scale, this->position.y + 2 * this->scale);
-                fireBall.SetVelocity(0, 300);
-                fireBall.SetCurrentRow(24);
+                    fireBalls[contador]->Initialize(this->position.x - 2 * 4, this->position.y + 2  * 4, 8, 8, 4);
+                    fireBalls[contador]->colider.SetVelocity(0, 300);
+                    fireBalls[contador]->colider.SetPosition(this->position.x - 2 * this->scale, this->position.y + 2 * this->scale);
+                    fireBalls[contador]->SetVelocity(0, 300);
+                    fireBalls[contador]->SetCurrentRow(24);
                             
+                }
+                contador++;
+            }else{
+                contador = 0;
             }
         }
     }
     coolDown += deltaTime;
-    fireBall.Update(deltaTime, this->position);
+    fireBallUno.Update(deltaTime, this->position);
+    fireBallDos.Update(deltaTime, this->position);
+    fireBallTres.Update(deltaTime, this->position);
     
 }
 
@@ -167,7 +179,9 @@ void Player::Render(){
     textureManager.destinationRectangle.y = WINDOW_HEIGHT/2;
     SDL_RenderCopy(Game::renderer, textureManager.texture,
     &textureManager.sourceRectangle, &textureManager.destinationRectangle);
-    fireBall.Render();
+    fireBallUno.Render();
+    fireBallDos.Render();
+    fireBallTres.Render();
 }
 
 bool Player::KeyIsDown(SDL_Scancode key){
@@ -182,7 +196,7 @@ bool Player::KeyIsDown(SDL_Scancode key){
 }
 
 Hechizo& Player::GetFireBall(){
-    return this->fireBall;
+    return this->fireBallUno;
 }
 
 glm::vec2 Player::GetPlayerPosition(){

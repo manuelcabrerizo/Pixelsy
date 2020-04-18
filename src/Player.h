@@ -7,6 +7,7 @@
 #include "./ColiderComponent.h"
 #include "Hechizo.h"
 #include "TileMap.h"
+#include <vector>
 
 
 class Player{
@@ -19,7 +20,8 @@ class Player{
         int currentFrame;
         int currentRow;
         int numberFrame;
-        float coolDown = 3.0;
+        int contador = 0;
+        float coolDown = 0.0;
         bool isDrawable = true;
         const Uint8* keystate;
         TextureManager textureManager;
@@ -27,7 +29,10 @@ class Player{
         bool lWasPress;
         bool uWasPress;
         bool dWasPress;    
-        Hechizo fireBall;
+        Hechizo fireBallUno;
+        Hechizo fireBallDos;
+        Hechizo fireBallTres;
+        std::vector<Hechizo*>fireBalls;
 
 
     public:
